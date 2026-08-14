@@ -1,0 +1,12 @@
+# Neovim
+.netrwhist
+**/spell/
+
+# Compiled Lua sources
+luac.out
+
+# Logs
+*.log
+
+# Don't ignore lazy-lock.json as it should be tracked
+# lazy-lock.json

@@ -1,0 +1,8 @@
+# Neovide Configuration
+# This file is loaded by Neovide on startup before Neovim even launches.
+
+grid = "150x60"
+
+[font]
+normal = ["IBM Plex Mono", "SF Mono", "Menlo", "Monaco"]
+size = 14.0

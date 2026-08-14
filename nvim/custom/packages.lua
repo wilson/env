@@ -1,0 +1,300 @@
+------------------------------------------
+-- Package configuration using Lazy.nvim
+------------------------------------------
+local M = {}
+
+-- Configure Lazy.nvim and set up plugins
+function M.build_specs(languages_config)
+  -- Define plugin specs
+  local plugins = {
+    -- Color schemes
+    {
+      "bluz71/vim-moonfly-colors",
+      lazy = false,
+      priority = 1000, -- Load before other plugins
+      config = function()
+        -- Disable all italics
+        vim.g.moonflyItalics = false
+      end,
+    },
+    {
+      "EdenEast/nightfox.nvim",
+      lazy = true,
+      config = function()
+        require("nightfox").setup({
+          options = {
+            styles = {
+              comments = "NONE",
+              keywords = "NONE",
+              functions = "NONE",
+              strings = "NONE",
+              variables = "NONE",
+            }
+          }
+        })
+      end
+    },
+    {
+      "projekt0n/github-nvim-theme",
+      lazy = true,
+      config = function()
+        require("github-theme").setup({
+          options = {
+            styles = {
+              comments = "NONE",
+              keywords = "NONE",
+              functions = "NONE",
+              strings = "NONE",
+              variables = "NONE",
+            }
+          }
+        })
+      end
+    },
+
+
+    -- JSON/YAML Schema Store
+    {
+      "b0o/schemastore.nvim",
+      priority = 950, -- Load early to ensure it's available for LSP setup
+    },
+
+    -- Mason, mason-lspconfig and LSP configuration in one place
+    {
+      "williamboman/mason.nvim",
+      priority = 900,
+      dependencies = {
+        "williamboman/mason-lspconfig.nvim",
+        "neovim/nvim-lspconfig",
+        "hrsh7th/cmp-nvim-lsp",
+      },
+      config = function()
+        -- Set up Mason first
+        require("mason").setup()
+        -- Set up global LSP functionality
+        local lspconfig = require("lspconfig")
+        -- Standard keybindings for all LSP servers
+        local on_attach = function(_, bufnr)
+          -- Delegate to centralized keymaps module
+          _G.require_and_setup("custom.keymaps", "setup_lsp", bufnr)
+        end
+        -- LSP capabilities (with cmp integration if available)
+        local capabilities = vim.lsp.protocol.make_client_capabilities()
+        local cmp_nvim_lsp = _G.require_and_setup("cmp_nvim_lsp", false)
+        if cmp_nvim_lsp then
+          capabilities = cmp_nvim_lsp.default_capabilities(capabilities)
+        end
+        -- Get server-specific settings
+        local server_settings = languages_config.server_settings or {}
+        -- Set up mason-lspconfig last, with LSP integration
+        require("mason-lspconfig").setup({
+          ensure_installed = languages_config.language_servers or {},
+          automatic_installation = true,
+          handlers = {
+            -- Default handler for all servers
+            function(server_name)
+              local server_config = {
+                on_attach = on_attach,
+                capabilities = capabilities,
+              }
+              -- Apply server-specific settings if available
+              if server_settings[server_name] then
+                -- Add settings
+                if server_settings[server_name].settings then
+                  server_config.settings = server_settings[server_name].settings
+                end
+                -- Add other properties (filetypes, etc.)
+                for k, v in pairs(server_settings[server_name]) do
+                  if k ~= "settings" and k ~= "setup" then
+                    server_config[k] = v
+                  end
+                end
+                -- Run custom setup function if provided
+                if server_settings[server_name].setup then
+                  local setup_config = vim.deepcopy(server_config)
+                  server_settings[server_name].setup(setup_config)
+                  server_config = setup_config
+                end
+              end
+              -- Set up the server
+              lspconfig[server_name].setup(server_config)
+            end
+          }
+        })
+      end
+    },
+
+    -- Autocompletion
+    {
+      "hrsh7th/nvim-cmp",
+      dependencies = {
+        "hrsh7th/cmp-nvim-lsp",
+        "hrsh7th/cmp-buffer",
+        "hrsh7th/cmp-path",
+        "L3MON4D3/LuaSnip",
+        "saadparwaiz1/cmp_luasnip",
+      },
+      config = function()
+        local cmp = require("cmp")
+        local luasnip = require("luasnip")
+
+        cmp.setup({
+          snippet = {
+            expand = function(args)
+              luasnip.lsp_expand(args.body)
+            end,
+          },
+          mapping = cmp.mapping.preset.insert({
+            ["<C-d>"] = cmp.mapping.scroll_docs(-4),
+            ["<C-f>"] = cmp.mapping.scroll_docs(4),
+            ["<C-Space>"] = cmp.mapping.complete(),
+            ["<C-e>"] = cmp.mapping.abort(),
+            ["<CR>"] = cmp.mapping.confirm({ select = true }),
+            ["<Tab>"] = cmp.mapping(function(fallback)
+              if cmp.visible() then
+                cmp.select_next_item()
+              elseif luasnip.expand_or_jumpable() then
+                luasnip.expand_or_jump()
+              else
+                fallback()
+              end
+            end, { "i", "s" }),
+            ["<S-Tab>"] = cmp.mapping(function(fallback)
+              if cmp.visible() then
+                cmp.select_prev_item()
+              elseif luasnip.jumpable(-1) then
+                luasnip.jump(-1)
+              else
+                fallback()
+              end
+            end, { "i", "s" }),
+          }),
+          sources = cmp.config.sources({
+            { name = "nvim_lsp" },
+            { name = "luasnip" },
+            { name = "buffer" },
+            { name = "path" },
+          }),
+        })
+      end,
+    },
+
+    -- Treesitter for better syntax highlighting and more
+    {
+      "nvim-treesitter/nvim-treesitter",
+      branch = "master",
+      dependencies = { "nvim-treesitter/nvim-treesitter-textobjects" },
+      build = ":TSUpdate",
+      config = function()
+        require("nvim-treesitter.configs").setup({
+          -- Install these parsers automatically
+          ensure_installed = languages_config.treesitter_parsers or {},
+          -- Install parsers synchronously (only applied to `ensure_installed`)
+          sync_install = false,
+          -- Automatically install missing parsers when entering buffer
+          auto_install = true,
+          -- Don't enable highlighting by default (we'll do it in GUIMode)
+          highlight = {
+            enable = false,
+            disable = { "markdown", "markdown_inline" }, -- See TODO.md, disabled due to Neovim 0.12 upstream breakage
+          },
+          indent = {
+            enable = true,
+            disable = { "markdown", "markdown_inline" }, -- See TODO.md, disabled due to Neovim 0.12 upstream breakage
+          },
+          textobjects = {
+            select = {
+              enable = true,
+              -- Automatically jump forward to textobj, similar to targets.vim
+              lookahead = true,
+              keymaps = {
+                -- You can use the capture groups defined in textobjects.scm
+                ["af"] = "@function.outer",
+                ["if"] = "@function.inner",
+                ["ac"] = "@class.outer",
+                ["ic"] = "@class.inner",
+              },
+            },
+          },
+        })
+      end,
+    },
+
+    -- Code linter
+    {
+      "mfussenegger/nvim-lint",
+      config = function()
+        local nvim_lint = require("lint")
+
+        -- Set up linters based on config
+        nvim_lint.linters_by_ft = languages_config.linters_by_ft or {}
+
+        -- Use autocmd to trigger linting on changes
+        ---@diagnostic disable-next-line: param-type-mismatch
+        vim.api.nvim_create_autocmd({ "BufWritePost", "BufEnter" }, {
+          callback = function()
+            require("lint").try_lint()
+          end,
+        })
+      end,
+    },
+  }
+
+  return plugins
+end
+
+-- Initialize Lazy.nvim and configure plugins
+function M.setup()
+  local languages_config = _G.require_and_setup("custom.languages", false) or {}
+
+  -- Configure lazy.nvim plugin manager if it exists
+  local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+
+  -- Ensure lazy.nvim is installed
+  if not vim.loop.fs_stat(lazypath) then
+    vim.fn.system({
+      "git",
+      "clone",
+      "--filter=blob:none",
+      "https://github.com/folke/lazy.nvim.git",
+      "--branch=stable",
+      lazypath,
+    })
+  end
+  vim.opt.rtp:prepend(lazypath)
+
+  -- Initialize plugins with lazy.nvim
+  local lazy = _G.require_and_setup("lazy", false)
+  if not lazy then return end
+
+  -- Configure plugins with lazy.nvim
+  lazy.setup(M.build_specs(languages_config))
+
+  -- Add a command to run the linter
+  vim.api.nvim_create_user_command("Lint", function()
+    require("lint").try_lint()
+  end, {})
+
+  -- Process any lazy-loading plugins from languages config
+  if languages_config.lazy_plugins then
+    lazy.setup(languages_config.lazy_plugins)
+  end
+
+  -- Setup TSReinstall command to force reinstallation of TreeSitter parsers
+  vim.api.nvim_create_user_command("TSReinstall", function()
+    local cache_dir = vim.fn.stdpath("cache")
+    local parser_dir = cache_dir .. "/treesitter"
+    -- Check if the directory exists
+    if vim.fn.isdirectory(parser_dir) ~= 0 then
+      -- Remove the parser directory
+      vim.fn.delete(parser_dir, "rf")
+      vim.notify("TreeSitter parser cache deleted. Restart Neovim to reinstall parsers.", vim.log.levels.INFO)
+    else
+      vim.notify("TreeSitter parser cache not found at " .. parser_dir, vim.log.levels.WARN)
+    end
+    -- Ask user to restart Neovim
+    print("Please restart Neovim for changes to take effect.")
+  end, {})
+end
+
+return M
