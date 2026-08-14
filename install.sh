@@ -24,6 +24,9 @@ for pkg in "${DOTFILES_DIR}"/*/; do
   pkg="${pkg%/}"
   pkg_name=$(basename "${pkg}")
 
+  # Bypass the special-case home directory
+  [ "${pkg_name}" = "home" ] && continue
+
   link_target "${pkg}" "${CONFIG_DIR}/${pkg_name}"
 
   case "${pkg_name}" in
@@ -32,6 +35,17 @@ for pkg in "${DOTFILES_DIR}"/*/; do
       ;;
   esac
 done
+
+# Map legacy configs directly to $HOME with a leading dot.
+if [ -d "${DOTFILES_DIR}/home" ]; then
+  for file_path in "${DOTFILES_DIR}/home"/*; do
+    # Prevent execution on a literal '*' if the directory is empty
+    [ -e "${file_path}" ] || continue
+
+    filename=$(basename "${file_path}")
+    link_target "${file_path}" "${HOME}/.${filename}"
+  done
+fi
 
 # Normalize uname output, particularly a concern on Windows with MSYS2.
 platform_string="$(uname -s)"
