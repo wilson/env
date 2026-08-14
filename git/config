@@ -1,0 +1,47 @@
+[user]
+  email = wilson@wb78.net
+  name = Wilson Bilkovich
+  useConfigOnly = true
+[core]
+  compression = 9
+  whitespace = space-before-tab,trailing-space,incomplete-line,tabwidth=2
+  preloadindex = true
+  precomposeUnicode = true # Only honored (or necessary) on MacOS
+  eol = lf
+  autocrlf = false
+[init]
+  defaultBranch = master # Imperial mode
+[advice]
+  detachedHead = false
+[alias]
+  # Show any files that are being ignored
+  ignored = ls-files --others -i --exclude-standard
+  # Show ASCII commit relationships in log output
+  lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
+  # Restores to "clone" condition, including deleting untracked and ignored files. Careful!
+  nuke = clean -f -d -x
+  # Show tagged releases
+  releases = log --tags --simplify-by-decoration --pretty='format:%ai %d'
+[diff]
+  guitool = nvimdiff # Neovim
+[fetch]
+  prune = true
+  pruneTags = true
+  all = true
+  parallel = 0 # Auto-determine an appropriate number of threads
+[grep]
+  patternType = extended
+[log]
+  date = iso
+[merge]
+  guitool = nvimdiff2 # Neovim with 3-pane layout
+[pull]
+  ff = only
+  rebase = true
+  autoStash = true
+[push]
+  default = upstream
+[rebase]
+  autoStash = true
+[rerere]
+  enabled = true
