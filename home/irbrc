@@ -1,0 +1,6 @@
+require 'rubygems'
+require 'pp'
+
+IRB.conf[:PROMPT_MODE] = :SIMPLE
+
+# vim: filetype=ruby
