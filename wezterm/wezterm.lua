@@ -16,6 +16,7 @@ config.keys = {}
 
 -- If we are in vim or nvim, map Cmd-w to close the current buffer
 -- In other contexts, it behaves as normal, and closes the current WezTerm tab
+-- This explicitly does not detect nvimdiff / nvimdiff2 at the moment
 local act = wezterm.action
 table.insert(config.keys, {
   key = 'w',
