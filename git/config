@@ -22,6 +22,9 @@
   nuke = clean -f -d -x
   # Show tagged releases
   releases = log --tags --simplify-by-decoration --pretty='format:%ai %d'
+[checkout]
+  guess = false
+  workers = 0 # Use the number of logical CPU cores as the worker count
 [diff]
   guitool = nvimdiff # Neovim
 [fetch]
