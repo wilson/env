@@ -2,6 +2,7 @@
 -- All keymaps not provided directly by packages
 ------------------------------------------
 local M = {}
+local utils = _G.require_and_setup("custom.utils", false)
 
 function M.setup()
   vim.keymap.set('n', '<leader>w', vim.diagnostic.open_float, { noremap = true, silent = true, desc = "Show diagnostics float" })
@@ -10,6 +11,18 @@ function M.setup()
   vim.keymap.set('n', '<leader>p', function()
     return 'A <esc>"' .. vim.v.register .. 'p'
   end, { expr = true, desc = "Paste at end of line with leading space" })
+
+  vim.keymap.set('n', '<leader>bd', '<Cmd>w|bd<CR>', { desc = 'Write and delete buffer' })
+
+  if utils and utils.is_gui_environment() then
+    -- Map Cmd-w to close the current buffer
+    vim.keymap.set(
+      {'n', 'v', 'i'},
+      '<D-w>',
+      '<Cmd>bd<CR>',
+      { desc = 'Delete buffer' }
+    )
+  end
 end
 
 -- Invoked on-attach by the LSP package.
