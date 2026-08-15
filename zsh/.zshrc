@@ -113,9 +113,11 @@ typeset -g -A key
 # (Lack of this is why old vim ":!somecmd" subprocesses had terrible input handling)
 if (( ${+terminfo[smkx]} && ${+terminfo[rmkx]} )); then
   autoload -Uz add-zle-hook-widget
-
-  function enable_app_mode() { echoti smkx }
-  function disable_app_mode() { echoti rmkx }
+  # The explicit TTY redirect here bypasses the standard ZLE output tracker
+  # Without this, it's possible to get the white-background `%` output from
+  # zsh's PROMPT_SP feature during transitions, or at shell startup
+  function enable_app_mode() { echoti smkx >$TTY 2>/dev/null }
+  function disable_app_mode() { echoti rmkx >$TTY 2>/dev/null }
 
   # Convert to ZLE widgets to avoid conflict with the zle-line-init namespace
   zle -N enable_app_mode
