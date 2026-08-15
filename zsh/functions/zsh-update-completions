@@ -1,0 +1,31 @@
+#!/usr/bin/env zsh
+# Update cached zsh completions for various utilities
+# This avoids the need to call "eval" during normal shell startup
+# (At the cost of having two places to update when adding or removing such a utility)
+
+local compdir_local="${ZDOTDIR}/completions"
+[[ ! -d "${compdir_local}" ]] && { echo "Unable to find zsh completion cache directory at ${compdir_local}, aborting." >&2; return 1; }
+
+if (( "${+commands[uv]}" )); then
+  "${commands[uv]}" generate-shell-completion zsh >| "${compdir_local}/_uv"
+  echo "Updated uv completions."
+fi
+
+if (( "${+commands[mise]}" )); then
+  "${commands[mise]}" completion zsh >| "${compdir_local}/_mise"
+  echo "Updated mise completions."
+fi
+
+if (( "${+commands[rustup]}" )); then
+  "${commands[rustup]}" completions zsh >| "${compdir_local}/_rustup"
+  echo "Updated rustup completions."
+fi
+
+# Force compinit to rebuild the cache on next launch
+rm -f "${ZDOTDIR}/.zcompdump"*(N)
+
+# Marker to remind us if this has never been run on this system.
+# Referenced in .gitignore
+touch "${ZDOTDIR}/completions/.generated"
+
+echo "Tab-completion support caching complete. Open a new shell or run 'exec zsh' to apply."

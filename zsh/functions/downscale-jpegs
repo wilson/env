@@ -1,0 +1,22 @@
+#!/usr/bin/env zsh
+# Uses libvips to downscale all JPEG files in the current directory.
+# Optional arguments are, respectively, the max dimension of the output (width or height, whichever is larger), and the JPEG quality level.
+# Max width/height defaults to 3200 pixels, quality to 85.
+# Creates, if needed, a "downscaled" subdir for the output, and converts to sRGB colorspace.
+# No-op if no files match.
+if ! (( ${+commands[vipsthumbnail]} )); then
+  echo "'vipsthumbnail' command not found, install the libvips package" >&2
+  return 1
+fi
+
+local max_dim=${1:-3200}
+local quality=${2:-85}
+local out_dir="downscaled"
+
+mkdir -p "${out_dir}"
+for img in *.{jpg,jpeg,JPG,JPEG}(N); do
+  vipsthumbnail "${img}" \
+    --size "${max_dim}" \
+    --export-profile srgb \
+    -o "${out_dir}/%s.jpg[Q=${quality},strip]"
+done

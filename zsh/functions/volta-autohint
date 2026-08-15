@@ -1,0 +1,51 @@
+#!/usr/bin/env zsh
+# Function to auto-hint Volta usage (mirroring the uv UX)
+local current_dir="${PWD}"
+local project_dir=""
+local package_json=""
+local -x LC_ALL="C"
+
+# Walk up directory tree to find a Node project
+local check_dir="${current_dir}"
+while [[ "${check_dir}" != "/" ]]; do
+  if [[ -f "${check_dir}/package.json" ]]; then
+    project_dir="${check_dir}"
+    package_json="${check_dir}/package.json"
+    break
+  fi
+  check_dir="$(dirname "${check_dir}")"
+done
+
+# Handle hinting logic
+if [[ -n "${project_dir}" ]]; then
+  # Prevent spamming when moving between subdirectories of the same project
+  if [[ "${OLDPWD}" == "${project_dir}"* ]]; then
+    return
+  fi
+
+  # Check if the project is pinned with Volta
+  if grep -q '"volta"' "${package_json}" 2>/dev/null; then
+    # Volta is active. Extract the version for the UI.
+    local pinned_node=$(grep -A 5 '"volta"' "${package_json}" | grep '"node"' | cut -d'"' -f4 | head -1)
+    echo "🔄  $(basename "${project_dir}") (Node v$pinned_node via Volta)"
+  else
+    # Project found but no Volta pins - suggest creating one
+    echo "ℹ️  No Volta pins found for project: $(basename "${project_dir}")"
+
+    # Check for legacy JS version files to provide smarter hints
+    if [[ -f "${project_dir}/.nvmrc" ]]; then
+      local ver="$(tr -d '[:space:]' < "${project_dir}/.nvmrc")"
+      echo "📌  Found version in .nvmrc: $ver"
+      echo "ℹ️  Pin it with: volta pin node@$ver"
+    elif [[ -f "${project_dir}/.node-version" ]]; then
+      local ver="$(tr -d '[:space:]' < "${project_dir}/.node-version")"
+      echo "📌  Found version in .node-version: $ver"
+      echo "ℹ️  Pin it with: volta pin node@$ver"
+    else
+      echo "    Pin the current Node version with: volta pin node"
+    fi
+  fi
+elif [[ "${OLDPWD}" != "${PWD}"* && -f "${OLDPWD}/package.json" ]]; then
+  # Left a project directory - Volta seamlessly falls back to global default
+  echo "🔄  Using System Node"
+fi

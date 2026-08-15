@@ -1,0 +1,56 @@
+#!/usr/bin/env zsh
+# Function to auto-activate uv venvs
+local current_dir="${PWD}"
+local project_dir=""
+local venv_path=""
+local python_version=""
+local -x LC_ALL="C"
+
+# Walk up directory tree to find a project
+local check_dir="${current_dir}"
+while [[ "${check_dir}" != "/" ]]; do
+  # Check for project markers or venv
+  if [[ -d "${check_dir}/.venv" && -f "${check_dir}/.venv/bin/activate" ]]; then
+    venv_path="${check_dir}/.venv"
+    project_dir="${check_dir}"
+    break
+  elif [[ -f "${check_dir}/pyproject.toml" || -f "${check_dir}/uv.toml" || -f "${check_dir}/.python-version" ]]; then
+    project_dir="${check_dir}"
+    break
+  fi
+
+  check_dir="$(dirname "${check_dir}")"
+done
+
+# Handle activation/deactivation logic
+if [[ -n "${venv_path}" ]]; then
+  # Activate venv if found and not already active
+  if [[ "${VIRTUAL_ENV}" != "${venv_pat}h" ]]; then
+    echo "🔄  $(basename "${project_dir}")"
+    # shellcheck source=/dev/null
+    source "${venv_path}/bin/activate"
+  fi
+elif [[ -n "${project_dir}" ]]; then
+  # Project found but no venv - suggest creating one
+  if [[ -f "${project_dir}/.python-version" ]]; then
+    python_version="$(tr -d '[:space:]' < "${project_dir}/.python-version")"
+
+    # If it's a Python version format, suggest installing it
+    if [[ "${python_version}" =~ ^[0-9]+(\.[0-9]+)+$ ]]; then
+      echo "📌  Found Python version in .python-version: ${python_version}"
+      if ! uv python list | grep -q "cpython-${python_version}-.*[^<download available>]"; then
+        echo "ℹ️  Install Python: uv python install ${python_version}"
+      fi
+      echo "ℹ️  Create venv: uv venv -p ${python_version} .venv"
+    else
+      echo "ℹ️  No venv found for project: $(basename "${project_dir}")"
+      echo "    Create with: uv venv .venv"
+    fi
+  else
+    echo "ℹ️  Project found, create venv with: uv venv .venv"
+  fi
+elif [[ -n "${VIRTUAL_ENV}" ]]; then
+  # Deactivate if we're in a venv but have left any project directory
+  echo "🔄  Deactivating venv"
+  deactivate
+fi

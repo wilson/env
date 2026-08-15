@@ -1,0 +1,15 @@
+#!/usr/bin/env zsh
+# Random string generator - optimized version
+local length=${1:-32}
+local chars='a-zA-Z0-9'
+local -x LC_ALL=C
+
+# Try urandom first (faster) with fallback to openssl (more compatible)
+if (( ${+commands[openssl]} )); then
+  # OpenSSL method (no fallback needed as it's reliable on macOS)
+  openssl rand -base64 $((length * 2)) | tr -dc $chars | head -c ${length}
+else
+  # Direct /dev/urandom method (fallback)
+  cat /dev/urandom | tr -dc $chars | head -c ${length}
+fi
+echo # Add newline

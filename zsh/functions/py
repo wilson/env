@@ -1,0 +1,11 @@
+#!/usr/bin/env zsh
+# Easy access to global Python
+# This is a function instead of an alias to avoid early expansion
+local latest_python_dir=$(find_latest_python)
+
+if [[ -n "$latest_python_dir" && -x "$latest_python_dir/bin/python3" ]]; then
+  "$latest_python_dir/bin/python3" "$@"
+else
+  echo "No UV Python found" >&2
+  return 1
+fi

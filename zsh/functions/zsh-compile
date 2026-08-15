@@ -1,0 +1,11 @@
+#!/usr/bin/env zsh
+# Pre-compile zsh scripts for startup
+if [[ -z "${ZDOTDIR}" ]]; then
+  echo "Error: ZDOTDIR environment variable not configured. Aborting." >&2
+  return 1
+fi
+
+rm -f "${ZDOTDIR}"/.*.zwc(N) # NULL_GLOB mode
+for f in "${ZDOTDIR}"/.{zshrc,zshenv,zprofile} "${ZDOTDIR}"/.*.zsh(N); do
+  [[ -f "${f}" ]] && zcompile "${f}"
+done

@@ -1,0 +1,7 @@
+#!/usr/bin/env zsh
+# Find latest Python installation using sort -V
+local uv_python_base="${HOME}/.local/share/uv/python"
+# Find all Python directories, sort by version, and take the latest one
+find "${uv_python_base}" -type d -name "cpython-*" 2>/dev/null |
+  sort -V |
+  tail -n 1

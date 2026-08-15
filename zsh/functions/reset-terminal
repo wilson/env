@@ -1,0 +1,6 @@
+#!/usr/bin/env zsh
+# Terminal utility to reset both title and colors
+# Reset terminal title
+print -Pn "\e]0;\a"
+# Reset terminal colors
+print -n "\e[00m"

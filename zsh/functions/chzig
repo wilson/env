@@ -1,0 +1,8 @@
+#!/usr/bin/env zsh
+# Convenience wrapper for picking a Zig implementation, a la chruby.
+# Prints current selection when called with no arguments.
+if [[ -z "$1" ]]; then
+  mise current zig
+else
+  mise shell "zig@$1"
+fi

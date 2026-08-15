@@ -1,0 +1,43 @@
+#!/usr/bin/env zsh
+# Whitespace conformance meta-hammer
+#
+# Same prefix as the override, global export as tab-completion reminder
+# TODO - It's a little quirky that this only now gets set when the function
+# is picked up by autoload. Minor chicken-and-egg issue to consider one day.
+typeset -gxa CLEAN_FILE_EXTS_DEFAULT=(
+  "*.js" "*.md" "*.sql" "*.html" "*.css" "*.zig" "*.lua"
+)
+
+# Set CLEAN_FILE_EXTS to override the default extension patterns
+local target_dir="${1:-.}"
+
+local -a exclude_dirs=(
+  node_modules .git venv .venv vendor .bundle __pycache__
+)
+
+local -a extensions
+if [[ -n "$CLEAN_FILE_EXTS" ]]; then
+  extensions=("${(@s/ /)CLEAN_FILE_EXTS}")
+else
+  extensions=("${CLEAN_FILE_EXTS_DEFAULT[@]}")
+fi
+
+local -a prune_args=()
+for d in "${exclude_dirs[@]}"; do
+  prune_args+=(-name "$d" -o)
+done
+prune_args[-1]=()
+
+local -a ext_args=()
+for e in "${extensions[@]}"; do
+  ext_args+=(-name "$e" -o)
+done
+ext_args[-1]=()
+
+find "$target_dir" \
+  -type d \( "${prune_args[@]}" \) -prune -o \
+  -type f \( "${ext_args[@]}" \) \
+  -exec sed -i '' \
+    -e 's/[[:space:]]*$//' \
+    -e ':a' -e '/^\n*$/{$d;N;ba' -e '}' \
+    -e '$a\' {} +

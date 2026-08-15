@@ -1,0 +1,17 @@
+#!/usr/bin/env zsh
+# Query the TCC daemon log for events related to a particular application.
+# Useful to debug repeated requests to allow access to directories.
+# Currently shows the last 24 hours, possibly worth parameterizing.
+if ! (( ${+commands[log]} )); then
+  echo "'log' command not found, this function is specific to macOS." >&2
+  return 1
+fi
+
+local timespan="24h"
+local query="$1"
+if [[ -z "$query" ]]; then
+  echo "No application name specified, showing full tccd debug log." >&2
+  log show --predicate "process == \"tccd\"" --debug --last "${timespan}"
+else
+  log show --predicate "process == \"tccd\" and eventMessage CONTAINS[c] \"${query}\"" --debug --last "${timespan}"
+fi
