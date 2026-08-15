@@ -9,6 +9,7 @@ if [ ! -d "${DOTFILES_DIR}" ]; then
 fi
 
 CONFIG_DIR="${XDG_CONFIG_HOME:-${HOME}/.config}"
+mkdir -p "${CONFIG_DIR}"
 
 link_target() {
   src="${1}"
