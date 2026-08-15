@@ -67,6 +67,16 @@ if (( ${+commands[ri]} )); then
   typeset -x RI='-f ansi --no-gems'
 fi
 
+# Find latest Python installation using sort -V
+# (This is not an autoload function because we need it in non-interactive contexts)
+find-latest-python() {
+  local uv_python_base="${HOME}/.local/share/uv/python"
+  # Find all Python directories, sort by version, and take the latest one
+  find "${uv_python_base}" -type d -name "cpython-*" 2>/dev/null |
+    sort -V |
+    tail -n 1
+}
+
 # UV Python setup
 local uv_python_version_dir=$(find-latest-python)
 if [[ -n "${uv_python_version_dir}" && -x "${uv_python_version_dir}/bin/python3" ]]; then
