@@ -4,7 +4,7 @@
 # (At the cost of having two places to update when adding or removing such a utility)
 
 local compdir_local="${ZDOTDIR}/completions"
-[[ ! -d "${compdir_local}" ]] && { echo "Unable to find zsh completion cache directory at ${compdir_local}, aborting." >&2; return 1; }
+[[ ! -d "${compdir_local}" ]] && { echo -e "Unable to find zsh completion cache directory at ${compdir_local}, aborting.\n" >&2; return 1; }
 
 if (( "${+commands[uv]}" )); then
   "${commands[uv]}" generate-shell-completion zsh >| "${compdir_local}/_uv"

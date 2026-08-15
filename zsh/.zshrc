@@ -5,7 +5,7 @@
 # Global versions of each are evaluated before user dotfiles
 
 if [[ -z "${ZDOTDIR}" ]]; then
-  echo "Error: ZDOTDIR environment variable not configured. Aborting further .zshrc configuration." >&2
+  echo -e "Error: ZDOTDIR environment variable not configured. Aborting further .zshrc configuration.\n" >&2
   return 1
 fi
 
@@ -47,7 +47,7 @@ fi
 local fpath_local="${ZDOTDIR}/functions"
 local compdir_local="${ZDOTDIR}/completions"
 if [[ ! -f "${compdir_local}/.generated" ]]; then
-  echo "Shell completion cache not found. Run 'zsh-update-completions' to generate it." >&2
+  echo -e "Shell completion cache not found. Run 'zsh-update-completions' to generate it.\n" >&2
 fi
 # Prepend function and completion dirs to any of the ones found above
 fpath=("${fpath_local}" "${compdir_local}" $fpath)
@@ -108,15 +108,21 @@ typeset -g -A key
 [[ -n ${key[Down]} ]] && bindkey "${key[Down]}" down-line-or-search
 [[ -n ${key[ShiftTab]} ]] && bindkey "${key[ShiftTab]}" reverse-menu-complete
 
-# Ensure the terminal is in application mode when ZLE is active
+# Ensure terminal is in application mode when ZLE is active
 # Required for terminfo cursor/keypad strings to match actual terminal output
 # (Lack of this is why old vim ":!somecmd" subprocesses had terrible input handling)
 if (( ${+terminfo[smkx]} && ${+terminfo[rmkx]} )); then
   autoload -Uz add-zle-hook-widget
-  function zle-line-init() { echoti smkx }
-  function zle-line-finish() { echoti rmkx }
-  add-zle-hook-widget zle-line-init
-  add-zle-hook-widget zle-line-finish
+
+  function enable_app_mode() { echoti smkx }
+  function disable_app_mode() { echoti rmkx }
+
+  # Convert to ZLE widgets to avoid conflict with the zle-line-init namespace
+  zle -N enable_app_mode
+  zle -N disable_app_mode
+
+  add-zle-hook-widget line-init enable_app_mode
+  add-zle-hook-widget line-finish disable_app_mode
 fi
 
 # Classic prompt with suffix of the final component of the working dir path

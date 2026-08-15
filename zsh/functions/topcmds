@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 # Most-frequently run commands, counting only the base cmd and the first argument.
 # Defaults to top 20, optional arg overrides that.
-[[ -z "${HISTFILE}" ]] && {{ echo "HISTFILE env var not configured. Aborting." >&2; return 1; }
+[[ -z "${HISTFILE}" ]] && {{ echo -e "HISTFILE env var not configured. Aborting.\n" >&2; return 1; }
 
 local -x LC_ALL=C
 fc -A

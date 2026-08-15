@@ -5,7 +5,7 @@
 # Creates, if needed, a "downscaled" subdir for the output, and converts to sRGB colorspace.
 # No-op if no files match.
 if ! (( ${+commands[vipsthumbnail]} )); then
-  echo "'vipsthumbnail' command not found, install the libvips package" >&2
+  echo -e "'vipsthumbnail' command not found, install the libvips package.\n" >&2
   return 1
 fi
 
