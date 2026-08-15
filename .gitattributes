@@ -4,3 +4,6 @@ README.md linguist-language=Markdown
 LICENSE linguist-documentation
 LICENSE linguist-language=Text
 *.zsh linguist-language=Shell
+zsh/functions/* linguist-language=Shell
+zsh/completions/* linguist-language=Shell
+
