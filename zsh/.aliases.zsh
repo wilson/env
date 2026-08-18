@@ -8,7 +8,7 @@
 alias sudo='sudo '
 
 # Editors
-alias nv='neovide --fork'
+alias nv='neovide --fork --reuse-instance'
 alias v="${VISUAL:-nvim}"
 
 # ls config
