@@ -16,9 +16,14 @@ if [[ -d "${google_cloud_bin_dir}" ]]; then
 fi
 
 # LM Studio CLI (lms)
-# TODO - Move this to XDG_CONFIG_HOME if possible
+# TODO - Investigate moving this to XDG_CONFIG_HOME
 local lmstudio_bin_dir="${HOME}/.lmstudio/bin"
 if [[ -d "${lmstudio_bin_dir}" ]]; then
   path=($path "${lmstudio_bin_dir}")
 fi
 
+# TODO - Investigate moving this to XDG_CONFIG_HOME
+local orbstack_bin_dir="${HOME}/.orbstack/bin"
+if [[ -d "${orbstack_bin_dir}" ]]; then
+  path=($path "${orbstack_bin_dir}")
+fi

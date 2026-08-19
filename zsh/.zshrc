@@ -47,7 +47,7 @@ fi
 local fpath_local="${ZDOTDIR}/functions"
 local compdir_local="${ZDOTDIR}/completions"
 if [[ ! -f "${compdir_local}/.generated" ]]; then
-  echo -e "Shell completion cache not found. Run 'zsh-update-completions' to generate it.\n" >&2
+  echo -e "Shell completion cache not found. Run 'zsh-completion-cache' to generate it.\n" >&2
 fi
 # Prepend function and completion dirs to any of the ones found above
 fpath=("${fpath_local}" "${compdir_local}" $fpath)

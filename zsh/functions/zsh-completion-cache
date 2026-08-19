@@ -8,17 +8,32 @@ local compdir_local="${ZDOTDIR}/completions"
 
 if (( "${+commands[uv]}" )); then
   "${commands[uv]}" generate-shell-completion zsh >| "${compdir_local}/_uv"
-  echo "Updated uv completions."
+  echo "Updated UV completions."
 fi
 
 if (( "${+commands[mise]}" )); then
   "${commands[mise]}" completion zsh >| "${compdir_local}/_mise"
-  echo "Updated mise completions."
+  echo "Updated Mise completions."
 fi
 
 if (( "${+commands[rustup]}" )); then
   "${commands[rustup]}" completions zsh >| "${compdir_local}/_rustup"
-  echo "Updated rustup completions."
+  echo "Updated Rustup completions."
+fi
+
+if (( "${+commands[volta]}" )); then
+  "${commands[volta]}" completions zsh >| "${compdir_local}/_volta"
+  echo "Updated Volta completions."
+fi
+
+if (( "${+commands[orbctl]}" )); then
+  local orbstack_comp_dir="${HOME}/.orbstack/shell/completions/zsh"
+  if [[ -d "${orbstack_comp_dir}" ]]; then
+    cp "${orbstack_comp_dir}"/_*(N) "${compdir_local}/"
+    echo "Updated OrbStack completions."
+  else
+    echo -e "OrbStack appears to be present, but ${orbstack_comp_dir} was not found. Skipping OrbStack completion cache.\n ">&2
+  fi
 fi
 
 # Force compinit to rebuild the cache on next launch
