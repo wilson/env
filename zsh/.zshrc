@@ -72,10 +72,14 @@ if (( "${+commands[volta]}" )); then
 fi
 
 # Shell history config
+# Explicitly NOT exported, so a nested non-zsh shell like bash doesn't clobber the history
+# A lesson learned from https://github.com/stapelberg/configfiles
+typeset +x HISTFILE="${ZDOTDIR}/.zsh_history"
+
+# Load a lot of history, but save everything
 # TODO: Some kind of auto-archive to prevent it from ever getting this large?
 # This is just to avoid ever losing a log entry
-typeset -x HISTFILE="${ZDOTDIR}/.zsh_history"
-typeset -x HISTSIZE=10000000
+typeset -x HISTSIZE=1000000
 typeset -x SAVEHIST=10000000
 
 # (These are at the end, in case something irritating above overrode them)
