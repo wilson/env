@@ -74,6 +74,10 @@ alias flactags='metaflac --export-tags-to=-'
 alias rando='random-string'
 alias rm-art='eyeD3 --remove-images **/*.mp3'
 alias yt='yt-dlp --batch-file=- --quiet --cookies-from-browser=chrome --merge-output-format=mkv --console-title --default-search=auto --add-metadata --ignore-config --ignore-errors  --geo-bypass --no-playlist --playlist-random --hls-prefer-native --restrict-filenames --no-mtime --no-progress'
+if (( ${+commands[udunits2]} )); then
+  # https://docs.unidata.ucar.edu/udunits/current/udunits2prog.html
+  alias unit='udunits2 -U' # Unicode UTF-8 output
+fi
 
 # Smooth Video Player
 # Relies on having an "svp" profile in the mpv config file
