@@ -9,11 +9,9 @@ config.initial_rows = 55
 
 config.color_scheme = 'Moonfly (Gogh)'
 
-config.window_background_opacity = 1.0
-config.macos_window_background_blur = 0
+config.audible_bell = 'Disabled'
 
 config.keys = {}
-
 -- If we are in vim or nvim, map Cmd-w to close the current buffer
 -- In other contexts, it behaves as normal, and closes the current WezTerm tab
 -- This explicitly does not detect nvimdiff / nvimdiff2 at the moment
@@ -32,5 +30,9 @@ table.insert(config.keys, {
     end
   end),
 })
+
+-- TODO: These are potentially the defaults and could be omitted
+config.window_background_opacity = 1.0
+config.macos_window_background_blur = 0
 
 return config
