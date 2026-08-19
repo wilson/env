@@ -11,10 +11,12 @@ if (( "${+commands[uv]}" )); then
   echo "Updated UV completions."
 fi
 
-if (( "${+commands[mise]}" )); then
-  "${commands[mise]}" completion zsh >| "${compdir_local}/_mise"
-  echo "Updated Mise completions."
-fi
+# TODO - "mise activate" duplicates this
+# The path manipulation and the completion setup need splitting before this is useful
+# if (( "${+commands[mise]}" )); then
+#   "${commands[mise]}" completion zsh >| "${compdir_local}/_mise"
+#   echo "Updated Mise completions."
+# fi
 
 if (( "${+commands[rustup]}" )); then
   "${commands[rustup]}" completions zsh >| "${compdir_local}/_rustup"

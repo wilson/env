@@ -71,6 +71,12 @@ if (( "${+commands[volta]}" )); then
   volta-autohint # Run once when shell starts
 fi
 
+# mise
+# TODO - This sets up both completions and paths, split that so the completions can be cached
+if (( "${+commands[mise]}" )); then
+  eval "$(${commands[mise]} activate zsh)"
+fi
+
 # Shell history config
 # Explicitly NOT exported, so a nested non-zsh shell like bash doesn't clobber the history
 # A lesson learned from https://github.com/stapelberg/configfiles
