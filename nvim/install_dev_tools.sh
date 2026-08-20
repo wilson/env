@@ -722,13 +722,13 @@ install_treesitter_parsers() {
   # Extract treesitter parsers from config
   # Define a list of common parsers in case we can't read from config
   DEFAULT_PARSERS=("lua" "vim" "vimdoc" "query" "python" "bash" "c" "cpp" "javascript" "typescript")
-  
+
   # Try to extract from config first
   PARSERS=()
   while read -r parser; do
     PARSERS+=("${parser}")
   done < <(extract_lua_array "treesitter_parsers" 2>/dev/null)
-  
+
   # If no parsers found or error occurred, use defaults
   if [ ${#PARSERS[@]} -eq 0 ]; then
     colored_echo "${YELLOW}Could not read TreeSitter parsers from config. Using defaults.${RESET}"
@@ -969,19 +969,19 @@ main() {
   # Remind about nvim Mason
   colored_echo "\n${BLUE}You can manage language servers directly in Neovim with:${RESET}"
   colored_echo "${BLUE}  :Mason${RESET}"
-  
+
   # On macOS, install SF Mono fonts if they're not already in the user's Fonts directory
   if [[ "${OS_TYPE}" == "macos" ]]; then
     # Check if fonts are already installed - use safer glob check
     if ! test -n "$(find ~/Library/Fonts -name "SF-*.otf" 2>/dev/null)"; then
       colored_echo "\n${BOLD}=== Installing SF Mono Fonts ===${RESET}"
       colored_echo "${BLUE}SF Mono fonts not found in user font directory.${RESET}"
-      
+
       # Check if source fonts exist - use safer glob check
       if test -n "$(find /System/Applications/Utilities/Terminal.app/Contents/Resources/Fonts -name "SF-*.otf" 2>/dev/null)"; then
         # Create font directory if it doesn't exist
         mkdir -p ~/Library/Fonts
-        
+
         # Copy fonts
         colored_echo "${BLUE}Copying SF Mono fonts from Terminal.app to ~/Library/Fonts/${RESET}"
         if cp /System/Applications/Utilities/Terminal.app/Contents/Resources/Fonts/SF-*.otf ~/Library/Fonts/; then
