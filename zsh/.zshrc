@@ -15,6 +15,10 @@ zstyle ':completion:*' completer _complete _ignored _prefix
 autoload -Uz compinit
 compinit -d "${ZDOTDIR}/.zcompdump"
 
+# TODO - This actually results in the _git completion being the "bash wrapper" vs. the native zsh version.
+# This is slightly irritating to fix because "site-functions" wins in general.
+# symlink the correct zsh-native "_git" into ZDOTDIR/completions/ so that it wins.
+#
 # First try Homebrew completion locations if available
 if [[ -n "${HOMEBREW_PREFIX}" ]]; then
   brew_completions=(

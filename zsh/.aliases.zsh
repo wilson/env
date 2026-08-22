@@ -39,7 +39,6 @@ alias gau='git add --update'
 alias gc='git commit --verbose'
 alias gca='git commit --amend --reset-author --no-edit'
 alias gcl='git clone --verbose --no-progress'
-alias gco='git checkout --no-guess'
 alias gd='git diff --histogram'
 alias gdc='git diff --histogram --cached'
 alias gfp='git fetch --all --prune'
@@ -48,7 +47,9 @@ alias glp='git log --color --patch --abbrev-commit --histogram --relative-date -
 alias gls='git log --color --patch --abbrev-commit --relative-date --name-status'
 alias gp='git push'
 alias gpr='git pull --rebase --ff-only'
+alias gr='git restore'
 alias gst='git status --short --branch'
+alias gt='git switch --track'
 alias gwc='git whatchanged'
 
 # Legacy SCM nostalgia
