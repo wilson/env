@@ -5,7 +5,7 @@
 # TODO - It's a little quirky that this only now gets set when the function
 # is picked up by autoload. Minor chicken-and-egg issue to consider one day.
 typeset -gxa CLEAN_FILE_EXTS_DEFAULT=(
-  "*.c" "*.cpp" "*.css" "*.html" "*.js" "*.lua" "*.md" "*.py" "*.rb" "*.sh" "*.sql" "*.zig" "*.zon"
+  "*.c" "*.cpp" "*.css" "*.html" "*.js" "*.lua" "*.py" "*.rb" "*.sh" "*.sql" "*.zig" "*.zon"
 )
 
 # Set CLEAN_FILE_EXTS to override the default extension patterns
