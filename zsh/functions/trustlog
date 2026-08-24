@@ -2,7 +2,8 @@
 # Query the TCC daemon log for events related to a particular application.
 # Useful to debug repeated requests to allow access to directories.
 # Currently shows the last 24 hours, possibly worth parameterizing.
-if ! (( ${+commands[log]} )); then
+local log_util_path="/usr/bin/log"
+if [[ ! -x "${log_util_path}" ]] ; then
   echo -e "'log' command not found, this function is specific to macOS.\n" >&2
   return 1
 fi
@@ -11,7 +12,7 @@ local timespan="24h"
 local query="$1"
 if [[ -z "$query" ]]; then
   echo -e "No application name specified, showing full tccd debug log.\n" >&2
-  log show --predicate "process == \"tccd\"" --debug --last "${timespan}"
+  ${log_util_path} show --predicate "process == \"tccd\"" --debug --last "${timespan}"
 else
-  log show --predicate "process == \"tccd\" and eventMessage CONTAINS[c] \"${query}\"" --debug --last "${timespan}"
+  ${log_util_path} show --predicate "process == \"tccd\" and eventMessage CONTAINS[c] \"${query}\"" --debug --last "${timespan}"
 fi
