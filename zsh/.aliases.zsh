@@ -79,6 +79,9 @@ if (( ${+commands[udunits2]} )); then
   # https://docs.unidata.ucar.edu/udunits/current/udunits2prog.html
   alias unit='udunits2 -U' # Unicode UTF-8 output
 fi
+if (( ${+commands[brew]} )); then
+  alias brewup='brew upgrade && brew cleanup'
+fi
 
 # Smooth Video Player
 # Relies on having an "svp" profile in the mpv config file
