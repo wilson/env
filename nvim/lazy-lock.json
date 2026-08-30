@@ -13,7 +13,7 @@
   "nvim-lint": { "branch": "master", "commit": "3d55c8f67c6ae5c15e1042571e107c7a3d5c5f4e" },
   "nvim-lspconfig": { "branch": "master", "commit": "684cb45c2faa24ce463b4fe9aaf011bfe1e0fb26" },
   "nvim-treesitter": { "branch": "master", "commit": "cf12346a3414fa1b06af75c79faebe7f76df080a" },
-  "nvim-treesitter-textobjects": { "branch": "master", "commit": "5ca4aaa6efdcc59be46b95a3e876300cfead05ef" },
-  "schemastore.nvim": { "branch": "main", "commit": "05f46875469e02306ded3aae10de1851ab1bd497" },
+  "nvim-treesitter-textobjects": { "branch": "main", "commit": "898ee307df58f854d11cd7edd06472574d48014e" },
+  "schemastore.nvim": { "branch": "main", "commit": "f9031ec5f5b30d99ac43013685236bf65ff801a7" },
   "vim-moonfly-colors": { "branch": "master", "commit": "261664f92ed51cf0c077555b2d4b2530307eac17" }
 }
