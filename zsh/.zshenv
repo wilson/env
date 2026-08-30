@@ -35,7 +35,7 @@ typeset -x LC_CTYPE="en_US.UTF-8"
 typeset -x LANG="en_US.UTF-8"
 
 # MacOS-specific config
-if [[ $OSTYPE == darwin* ]]; then
+if [[ "${OSTYPE}" == darwin* ]]; then
   local macos_path_helper="/usr/libexec/path_helper"
   if [[ -x "${macos_path_helper}" ]]; then
     # Configure Apple's base system paths (including /etc/paths.d/)
@@ -48,10 +48,11 @@ if [[ $OSTYPE == darwin* ]]; then
   # Include brew bindir in PATH if it exists.
   # (HOMEBREW_PREFIX is used by .devtools.zsh as well)
   # Deliberately no support for non-standard Homebrew install locations
+  # TODO: Migrate Homebrew setup out of this block if using it on another platform ever makes sense
   if [[ -x /opt/homebrew/bin/brew ]]; then
     typeset -x HOMEBREW_PREFIX="/opt/homebrew"
     if [[ -d "${HOMEBREW_PREFIX}" ]]; then
-      path=("${HOMEBREW_PREFIX}/bin" $path)
+      path=("${HOMEBREW_PREFIX}/bin" "${HOMEBREW_PREFIX}/sbin" $path)
       typeset -xi HOMEBREW_AUTO_UPDATE_SECS=43200 HOMEBREW_API_AUTO_UPDATE_SECS=300 HOMEBREW_CLEANUP_PERIODIC_FULL_DAYS=7
       typeset -x HOMEBREW_NO_EMOJI="true" HOMEBREW_NO_ENV_HINTS="true"
     fi
