@@ -14,7 +14,7 @@ local quality=${2:-85}
 local out_dir="downscaled"
 
 mkdir -p "${out_dir}"
-for img in *.{jpg,jpeg,JPG,JPEG}(N); do
+for img in *.{jpg,jpeg,JPG,JPEG,heic,HEIC,DNG,dng}(N); do
   vipsthumbnail "${img}" \
     --size "${max_dim}" \
     --export-profile srgb \
