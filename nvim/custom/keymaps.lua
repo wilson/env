@@ -7,6 +7,9 @@ local utils = _G.require_and_setup("custom.utils", false)
 function M.setup()
   vim.keymap.set('n', '<leader>w', vim.diagnostic.open_float, { noremap = true, silent = true, desc = "Show diagnostics float" })
   vim.keymap.set('n', '<leader>W', vim.diagnostic.setloclist, { noremap = true, silent = true, desc = "Show diagnostics list" })
+  vim.keymap.set('n', '<leader>cd', function()
+    vim.cmd('lcd %:p:h')
+  end, { desc = "Change local working dir to location of file" })
 
   vim.keymap.set('n', '<leader>p', function()
     return 'A <esc>"' .. vim.v.register .. 'p'
