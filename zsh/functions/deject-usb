@@ -1,0 +1,27 @@
+#!/usr/bin/env zsh
+# On macOS, eject all external disks.
+if ! (( ${+commands[diskutil]} )); then
+  echo -e "TODO: Currently only implemented on macOS.\n" >&2
+  return 1
+fi
+
+if ! (( ${+commands[jq]} )); then
+  echo -e "Relies on jq - 'brew install jq' before use.\n" >&2
+  return 1
+fi
+
+typeset -aU external_disks
+
+external_disks=($(diskutil list -plist external physical \
+    | plutil -convert json -o - - \
+    | jq --raw-output '.WholeDisks[] | "/dev/" + .'))
+
+if [[ ${#external_disks[@]} -eq 0 ]]; then
+  echo -e "No external physical disks found.\n" >&2
+  return 0
+fi
+
+for disk in "${external_disks[@]}"; do
+  echo -e "Ejecting ${disk}." >&2
+  diskutil eject "${disk}"
+done
