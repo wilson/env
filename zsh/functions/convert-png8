@@ -1,0 +1,21 @@
+#!/usr/bin/env zsh
+# Uses libvips to convert the input image to palettized 8-bit PNG.
+# First two arguments are the input and output filename.
+# Optional third argument of color palette size, defaults to 256.
+# Happily overwrites existing output files.
+if ! (( ${+commands[vips]} )); then
+  echo -e "'vips' command not found, install the libvips package.\n" >&2
+  return 1
+fi
+
+local input_file="${1}"
+local output_file="${2}"
+local color_count="${3:-256}"
+if [[ ! -e "${input_file}" ]]; then
+  echo -e "'${input_file}' not found.\n" >&2
+  return 1
+fi
+
+vips pngsave "${input_file}" "${output_file}" \
+  --palette --Q=100 --dither=1.0 \
+  --colours="${color_count}"
