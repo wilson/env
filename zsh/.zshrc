@@ -61,7 +61,7 @@ autoload -Uz "${fpath_local}"/*(N.:t) # Handle the dir being empty, match only l
 [[ -f "${ZDOTDIR}/.aliases.zsh" ]] && source "${ZDOTDIR}/.aliases.zsh"
 
 # .devtools.zsh has already been loaded by .zshenv, just need to activate hooks
-autoload -U add-zsh-hook
+autoload -Uz add-zsh-hook
 
 # uv
 if (( "${+commands[uv]}" )); then
@@ -143,3 +143,16 @@ fi
 
 # Classic prompt with suffix of the final component of the working dir path
 typeset -x PROMPT='%n@%m %1~ %# '
+
+# Restore the terminal title to the name of the shell by default.
+_set_term_title_precmd() {
+  print -Pn "\e]0;${ZSH_NAME}\a"
+}
+
+# Set the title to the currently-executing command
+_set_term_title_preexec() {
+  print -Pn "\e]0;$1\a"
+}
+
+add-zsh-hook precmd _set_term_title_precmd
+add-zsh-hook preexec _set_term_title_preexec
