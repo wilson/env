@@ -10,7 +10,13 @@
 typeset -gx XDG_CONFIG_HOME="${${XDG_CONFIG_HOME:-${HOME}/.config}%/}"
 typeset -gx XDG_DATA_HOME="${${XDG_DATA_HOME:-${HOME}/.local/share}%/}"
 # Not a standard, but helps maintain consistency across this config
+# (:h is "head," drops the trailing "share" and gives us typically ~/.local)
 typeset -gx XDG_LOCAL_HOME="${XDG_DATA_HOME:h}"
+# The following are defaults, but ensure everything is set on platforms that happen to be spotty in XDG support.
+typeset -gx XDG_CACHE_HOME="${XDG_CACHE_HOME:-${HOME}/.cache}"
+typeset -gx XDG_STATE_HOME="${XDG_STATE_HOME:-${XDG_LOCAL_HOME}/state}"
+# (Deliberately not setting XDG_RUNTIME_DIR, can't guarantee it has
+# the mandatory properties on systems that do not set it themselves.)
 
 # The only zsh file in $HOME is a symlink to this .zshenv
 # The symlink only needs to be followed on initial shell launch, subshells will inherit this
