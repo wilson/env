@@ -1,0 +1,16 @@
+#!/usr/bin/env zsh
+# Invoke mpv with the SVP profile, without having to symlink-manage the ever-shifting VapourSynth lib path.
+# (Relies on having an "svp" profile in the mpv config file.)
+# TODO - Test on more than just macOS
+
+# "." scopes to regular files, N sets "nullglob" so the array is empty on failure
+local vs_dylib=("${HOMEBREW_PREFIX}"/opt/vapoursynth/libexec/lib/python*/site-packages/vapoursynth/libvsscript.dylib(.N))
+
+if [[ ${#vs_dylib[@]} -eq 0 ]]; then
+  echo -e "Error: Could not locate libvsscript.dylib in ${HOMEBREW_PREFIX}/opt/vapoursynth/libexec\n" >&2
+  return 1
+fi
+
+# VapourSynth's packaging has significantly changed recently.
+# The right move seems to be now to pass the exact file path directly to mpv
+VSSCRIPT_PATH="${vs_dylib[1]}" mpv --profile=svp "$@"

@@ -82,10 +82,3 @@ fi
 if (( ${+commands[brew]} )); then
   alias brewup='brew upgrade && brew cleanup'
 fi
-
-# Smooth Video Player
-# Relies on having an "svp" profile in the mpv config file
-# TODO - Test on more than just macOS
-if (( ${+commands[mpv]} )); then
-  alias svp='DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/lib mpv --profile=svp'
-fi
