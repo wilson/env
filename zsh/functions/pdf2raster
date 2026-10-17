@@ -1,0 +1,19 @@
+#!/usr/bin/env zsh
+# Convert a PDF to a rasterized version.
+# Necessary at times to avoid printer bugs, especially when the PDF contains Type 3 fonts.
+# Defaults to 300dpi, optional second argument overrides that.
+if ! (( ${+commands[gs]} )); then
+  echo -e "'gs' command not found, install the Ghostscript package.\n" >&2
+  return 1
+fi
+
+local infile="$1"
+local outfile="${infile%.*}-raster.pdf"
+local dpi="${2:-300}"
+
+gs -sDEVICE=pdfimage24 \
+  -r"${dpi}" \
+  -dNOPAUSE -dBATCH -dQUIET \
+  -sOutputFile="${outfile}" \
+  "${infile}" && \
+  echo -e "Wrote $outfile\n" >&2
