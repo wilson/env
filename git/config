@@ -57,3 +57,7 @@
 	process = git-lfs filter-process
 	required = true
 	clean = git-lfs clean -- %f
+[difftool "omnidiff"]
+	cmd = omnidiff \"$LOCAL\" \"$REMOTE\"
+[difftool]
+	prompt = false
