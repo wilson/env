@@ -43,8 +43,10 @@
   rebase = true
   autoStash = true
 [push]
+  # Less "safe" than "default = simple," but permits local/remote branch name divergence in a useful way.
   default = upstream
-  autoSetupRemote = true
+  # autoSetupRemote is nice, but more-suited to "default = simple" than "default = upstream"
+  autoSetupRemote = false
 [rebase]
   autoStash = true
 [rerere]

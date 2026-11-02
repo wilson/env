@@ -6,9 +6,6 @@
 # then create it while switching to it.
 # Otherwise, switch to it, forcing --guess mode to avoid needing to qualify it
 # with the name of the remote. --guess automatically sets up tracking when needed.
-#
-# This setup works best if "autoSetupRemote = true" is configured in
-# the [push] section of the global git config.
 if (( $# == 1 )) && [[ $1 != -* ]] && \
      [[ -z $(git for-each-ref --count=1 --format=1 \
         "refs/heads/$1" "refs/remotes/*/$1" 2>/dev/null) ]]; then
