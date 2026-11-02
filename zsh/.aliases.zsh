@@ -74,7 +74,11 @@ alias dlist='diskutil list'
 alias flactags='metaflac --export-tags-to=-'
 alias rando='random-string'
 alias rm-art='eyeD3 --remove-images **/*.mp3'
-alias yt='yt-dlp --batch-file=- --quiet --cookies-from-browser=chrome --merge-output-format=mkv --console-title --default-search=auto --add-metadata --ignore-config --ignore-errors  --geo-bypass --no-playlist --playlist-random --hls-prefer-native --restrict-filenames --no-mtime --no-progress'
+
+local yt_common_args='--batch-file=- --quiet --cookies-from-browser=chrome --console-title --default-search=auto --add-metadata --ignore-config --ignore-errors  --geo-bypass --no-playlist --playlist-random --hls-prefer-native --restrict-filenames --no-mtime --no-progress'
+alias yt="yt-dlp ${yt_common_args} --merge-output-format=mkv"
+alias yt4="yt-dlp ${yt_common_args} --merge-output-format=mp4"
+
 if (( ${+commands[udunits2]} )); then
   # https://docs.unidata.ucar.edu/udunits/current/udunits2prog.html
   alias unit='udunits2 -U' # Unicode UTF-8 output
