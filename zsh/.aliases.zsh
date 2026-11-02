@@ -34,6 +34,7 @@ alias recentlr='lt **/*(m-2.N)'
 # Git
 # Some options here are now redundant given the expected global Git config
 # This is intentional as documentation and "belt and suspenders" safety
+# For 'git switch' logic, see the 'gt' autoload function.
 alias ga='git add'
 alias gau='git add --update'
 alias gc='git commit --verbose'
@@ -49,7 +50,6 @@ alias gp='git push'
 alias gpr='git pull --rebase --ff-only'
 alias gr='git restore'
 alias gst='git status --short --branch'
-alias gt='git switch --track'
 alias gwc='git whatchanged'
 
 # Legacy SCM nostalgia
