@@ -238,8 +238,54 @@ function M.build_specs(languages_config)
         })
       end,
     },
+    -- Markdown rendering
+    {
+      "MeanderingProgrammer/render-markdown.nvim",
+      ft = { "markdown" },
+      dependencies = {
+        "nvim-treesitter/nvim-treesitter",
+      },
+      opts = {
+        -- Render in Normal, Command, and Terminal modes; keeps Insert/Visual "raw."
+        render_modes = { "n", "c", "t" },
+        completions = {
+          lsp = { enabled = true },
+        },
+        -- Avoids requiring mini.icons or nvim-web-devicons.
+        code = {
+          sign = false,
+          style = "normal",
+          width = "block",
+          left_pad = 2,
+          right_pad = 2,
+        },
+        heading = {
+          sign = false,
+          -- ASCII-safe / minimal markers, to avoid requiring "Nerd Font" icons.
+          icons = { "# ", "## ", "### ", "#### ", "##### ", "###### " },
+        },
+        bullet = {
+          icons = { "-", "*", "+", "-" },
+        },
+        checkbox = {
+          unchecked = { icon = "[ ] " },
+          checked = { icon = "[x] " },
+        },
+        anti_conceal = {
+          enabled = true,
+          -- Keeps code block backgrounds and table borders stable when the cursor is on the relevant line.
+          -- Hopefully minimizes jitter when in Neovide.
+          ignore = {
+            code_background = true,
+            head_background = true,
+            sign = true,
+            table_border = true,
+          },
+        },
+        latex = { enabled = false },
+      },
+    },
   }
-
   return plugins
 end
 
